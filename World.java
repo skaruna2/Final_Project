@@ -1,51 +1,66 @@
 
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public class World extends JPanel implements ActionListener {
+public class World extends JPanel implements Observer {
 
     private JMenu x;
     private JButton aboutButton;
     private JMenuItem mL;
-    private static Table table;
+
+     Table table;
 
     public World() {
-        // create a menubar 
+        Action action = new Action(this);
+        // create a menubar
         JMenuBar mb = new JMenuBar();
-
-        // create a menu 
+        // create a menu
         x = new JMenu("File");
         aboutButton = new JButton("About");
-
-        // create menuitems 
+        // create menuitems
         JMenuItem m1 = new JMenuItem("Load a Roster");
         JMenuItem m2 = new JMenuItem("Add Attendance");
         JMenuItem m3 = new JMenuItem("Save");
         JMenuItem m4 = new JMenuItem("Plot Data");
-
-        // add menu items to menu 
+        // add menu items to menu
         x.add(m1);
         x.add(m2);
         x.add(m3);
         x.add(m4);
 
-        aboutButton.addActionListener(this);
-        m1.addActionListener(this);
-        m2.addActionListener(this);
-        m3.addActionListener(this);
-        m4.addActionListener(this);
+        aboutButton.addActionListener(action);
+        m1.addActionListener(action);
+        m2.addActionListener(action);
+        m3.addActionListener(action);
+        m4.addActionListener(action);
+
 
         // add menu to menu bar 
         mb.add(x);
         mb.add(aboutButton);
+        this.setLayout(new BorderLayout());
+        this.add(mb,BorderLayout.NORTH);
 
-        this.setSize(500, 500);
-        this.setVisible(true);
+
     }
+
+    public void update(Observable o, String date, String[][] data) {
+
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
+    }
+
+
 
     /*
     public static void main(String[] args) {
@@ -55,7 +70,7 @@ public class World extends JPanel implements ActionListener {
     }
     */
 
-    @Override
+    /*@Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
 
@@ -121,5 +136,5 @@ public class World extends JPanel implements ActionListener {
         }
         return dialogLine;
     }
-
+*/
 }

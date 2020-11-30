@@ -5,9 +5,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class Action implements ActionListener {
-
-    Action() {
-
+    private World world;
+    private Repository repo;
+    Action(World world) {
+        this.world = world;
+        this.repo = new Repository();
+        repo.addObserver(world);
 
     }
 
@@ -16,8 +19,8 @@ public class Action implements ActionListener {
         // TODO Auto-generated method stub
 
         // if About Button is pressed, prints dialog box
-        if (aboutButton.equals(e.getSource())) {
-            JOptionPane.showMessageDialog(this, "CSE 360 Final Project done by:"
+        if (e.getActionCommand().equals(e.getSource())) {
+            JOptionPane.showMessageDialog(world, "CSE 360 Final Project done by:"
                     + "\nWilliam Bowden" + "\nKyle Otstot" + "\nShawn Karunanayake"
             );
         }
@@ -30,10 +33,10 @@ public class Action implements ActionListener {
             try {
                 String[][] data = reader.readRoster(choose.getSelectedFile());
                 String column[] = {"ID", "First Name", "Last Name", "Program", "Academic Level", "ASURITE"};
-                table = new Table(data, column);
-                table.getJT().setBounds(30, 40, 200, 300);
-                JScrollPane sp = new JScrollPane(table.getJT());
-                this.add(sp);
+                world.table = new Table(data, column);
+                world.table.getJT().setBounds(30, 40, 200, 300);
+                JScrollPane sp = new JScrollPane(world.table.getJT());
+                world.add(sp);
 
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
@@ -47,9 +50,9 @@ public class Action implements ActionListener {
                 String[][] data = reader.readAttendance(choose.getSelectedFile());
                 //TODO date picker
                 String test = "JEFF";
-                ArrayList<String[]> dialog = table.addColumn(data, test);
+                ArrayList<String[]> dialog = world.table.addColumn(data, test);
                 String dialogLine = dialogLine(dialog);
-                JOptionPane.showMessageDialog(this, "Data loaded for " + dialog.get(dialog.size() - 1)[0]
+                JOptionPane.showMessageDialog(world, "Data loaded for " + dialog.get(dialog.size() - 1)[0]
                         + " users in the roster.\n" + (dialog.size() - 2) + dialogLine);
 
             } catch (FileNotFoundException fileNotFoundException) {
@@ -57,7 +60,7 @@ public class Action implements ActionListener {
             }
         }
         world.revalidate();
-        repaint();
+        world.repaint();
     }
 
     String dialogLine(ArrayList<String[]> dialog) {
