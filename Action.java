@@ -6,67 +6,52 @@ import java.util.ArrayList;
 
 public class Action implements ActionListener {
     private World world;
-    private Repository repo;
-    Action(World world) {
+    private Repo repo;
+    Action(World world, Repo repo) {
         this.world = world;
-        this.repo = new Repository();
-        repo.addObserver(world);
-
+        this.repo = repo;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
+        if(e.getActionCommand() == "About") {
 
-        // if About Button is pressed, prints dialog box
-        if (e.getActionCommand().equals(e.getSource())) {
-            JOptionPane.showMessageDialog(world, "CSE 360 Final Project done by:"
-                    + "\nWilliam Bowden" + "\nKyle Otstot" + "\nShawn Karunanayake"
-            );
         }
-
-        // JMenu File Menu buttons
-        if (e.getActionCommand() == "Load a Roster") {
-            JFileChooser choose = new JFileChooser();
+        if(e.getActionCommand() == "Load a Roster") {
+            JFileChooser chooser = new JFileChooser();
             Reader reader = new Reader();
-            choose.showOpenDialog(null);
+            chooser.showOpenDialog(null);
             try {
-                String[][] data = reader.readRoster(choose.getSelectedFile());
-                String column[] = {"ID", "First Name", "Last Name", "Program", "Academic Level", "ASURITE"};
-                world.table = new Table(data, column);
-                world.table.getJT().setBounds(30, 40, 200, 300);
-                JScrollPane sp = new JScrollPane(world.table.getJT());
-                world.add(sp);
-
+                String[][] data = reader.readRoster(chooser.getSelectedFile());
+                repo.setData(data);
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
             }
         }
-        if (e.getActionCommand() == "Add Attendance") {
-            JFileChooser choose = new JFileChooser();
+        if(e.getActionCommand() == "Add Attendance") {
+            JFileChooser chooser = new JFileChooser();
             Reader reader = new Reader();
-            choose.showOpenDialog(null);
+            chooser.showOpenDialog(null);
             try {
-                String[][] data = reader.readAttendance(choose.getSelectedFile());
-                //TODO date picker
-                String test = "JEFF";
-                ArrayList<String[]> dialog = world.table.addColumn(data, test);
+                ArrayList<String[]> dialog = repo.addColumn(reader.readAttendance(chooser.getSelectedFile()), "NOV^^^");
                 String dialogLine = dialogLine(dialog);
                 JOptionPane.showMessageDialog(world, "Data loaded for " + dialog.get(dialog.size() - 1)[0]
-                        + " users in the roster.\n" + (dialog.size() - 2) + dialogLine);
-
+                        + " users in the roster.\n" + (dialog.size() - 1) + dialogLine);
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
             }
         }
-        world.revalidate();
-        world.repaint();
+        if(e.getActionCommand() == "Save") {
+            System.out.println("4");
+        }
+        if(e.getActionCommand() == "Plot Data") {
+            System.out.println("5");
+        }
     }
-
     String dialogLine(ArrayList<String[]> dialog) {
         String dialogLine, plural;
-        if (dialog.size() - 2 == 1) {
-            dialogLine = " additional attendee was found: ";
+        if (dialog.size() - 1 == 1) {
+            dialogLine = " additional attendee was found: \n";
         } else {
             dialogLine = " additional attendees were found:\n";
         }
@@ -81,3 +66,4 @@ public class Action implements ActionListener {
         return dialogLine;
     }
 }
+

@@ -1,21 +1,18 @@
 import javax.swing.*;
 
 public class Main extends JFrame {
-    public Main() {
-        World world = new World();
+    Main() {
+        Repo repo = new Repo();
+        World world = new World(repo);
+        repo.addObserver(world);
 
-        this.add(world);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(500, 500);
-        this.setVisible(true);
+        //String[][] data = new String[1][1];
+        //data[0][0] = "jeff";
+        //repo.setData(data);
+
 
     }
-    public static void main(String[] argv)  {
-        Main m = new Main();
-        // add menubar to frame
-        //;
-
-        // set the size of the frame
-
+    public static void main(String[] args) {
+        Main main = new Main();
     }
 }

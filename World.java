@@ -1,140 +1,64 @@
-
-
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-public class World extends JPanel implements Observer {
+public class World extends JFrame implements Observer {
+    private Repo repo;
+    private Action action;
+    private Table table;
 
-    private JMenu x;
-    private JButton aboutButton;
-    private JMenuItem mL;
-
-     Table table;
-
-    public World() {
-        Action action = new Action(this);
-        // create a menubar
-        JMenuBar mb = new JMenuBar();
-        // create a menu
-        x = new JMenu("File");
-        aboutButton = new JButton("About");
-        // create menuitems
+    World(Repo repo) {
+        this.repo = repo;
+        this.action = new Action(this, repo);
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        JButton aboutButton = new JButton("About");
         JMenuItem m1 = new JMenuItem("Load a Roster");
         JMenuItem m2 = new JMenuItem("Add Attendance");
         JMenuItem m3 = new JMenuItem("Save");
         JMenuItem m4 = new JMenuItem("Plot Data");
-        // add menu items to menu
-        x.add(m1);
-        x.add(m2);
-        x.add(m3);
-        x.add(m4);
-
+        menu.add(m1);
+        menu.add(m2);
+        menu.add(m3);
+        menu.add(m4);
         aboutButton.addActionListener(action);
         m1.addActionListener(action);
         m2.addActionListener(action);
         m3.addActionListener(action);
         m4.addActionListener(action);
-
-
-        // add menu to menu bar 
-        mb.add(x);
-        mb.add(aboutButton);
-        this.setLayout(new BorderLayout());
-        this.add(mb,BorderLayout.NORTH);
+        menuBar.add(menu);
+        menuBar.add(aboutButton);
+        //this.add(world);
+        //this.setLayout(new BorderLayout());
+        //this.add(mb,BorderLayout.NORTH);
+        this.setJMenuBar(menuBar);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(500, 500);
+        this.setVisible(true);
 
 
     }
-
-    public void update(Observable o, String date, String[][] data) {
-
-    }
-
     @Override
     public void update(Observable o, Object arg) {
-
-    }
-
-
-
-    /*
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        World world = new World();
-
-    }
-    */
-
-    /*@Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-
-        // if About Button is pressed, prints dialog box
-        if (aboutButton.equals(e.getSource())) {
-            JOptionPane.showMessageDialog(this, "CSE 360 Final Project done by:"
-                    + "\nWilliam Bowden" + "\nKyle Otstot" + "\nShawn Karunanayake"
-            );
+        if(repo.getN() == 1) {
+            System.out.println("InOBSERER");
+            String[][] data = repo.getData();
+            String[] header = repo.getHeader();
+            table = new Table(data,header);
+            table.getJTable().setBounds(30,40,200,300);
+            JScrollPane jScrollPane = new JScrollPane(table.getJTable());
+            JScrollBar jScrollBar = new JScrollBar();
+            //jScrollPane.setAutoscrolls(true);
+            this.add(jScrollPane);
+        }
+        if(repo.getN() > 1) {
+            JOptionPane datePicker = new JOptionPane();
+            String date = JOptionPane.showInputDialog(this, "Enter date: ");
+            table.addColumn(date, repo.getNColumns().get(repo.getN() - 2));
         }
 
-        // JMenu File Menu buttons
-        if (e.getActionCommand() == "Load a Roster") {
-            JFileChooser choose = new JFileChooser();
-            Reader reader = new Reader();
-            choose.showOpenDialog(null);
-            try {
-                String[][] data = reader.readRoster(choose.getSelectedFile());
-                String column[] = {"ID", "First Name", "Last Name", "Program", "Academic Level", "ASURITE"};
-                table = new Table(data, column);
-                table.getJT().setBounds(30, 40, 200, 300);
-                JScrollPane sp = new JScrollPane(table.getJT());
-                this.add(sp);
-
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileNotFoundException.printStackTrace();
-            }
-        }
-        if (e.getActionCommand() == "Add Attendance") {
-            JFileChooser choose = new JFileChooser();
-            Reader reader = new Reader();
-            choose.showOpenDialog(null);
-            try {
-                String[][] data = reader.readAttendance(choose.getSelectedFile());
-                //TODO date picker
-                String test = "JEFF";
-                ArrayList<String[]> dialog = table.addColumn(data, test);
-                String dialogLine = dialogLine(dialog);
-                JOptionPane.showMessageDialog(this, "Data loaded for " + dialog.get(dialog.size() - 1)[0]
-                        + " users in the roster.\n" + (dialog.size() - 2) + dialogLine);
-
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileNotFoundException.printStackTrace();
-            }
-        }
+        System.out.println("im l " + repo.getN());
         revalidate();
         repaint();
     }
-
-    String dialogLine(ArrayList<String[]> dialog) {
-        String dialogLine, plural;
-        if (dialog.size() - 2 == 1) {
-            dialogLine = " additional attendee was found: ";
-        } else {
-            dialogLine = " additional attendees were found:\n";
-        }
-        for (int i = 0; i < dialog.size() - 1; i++) {
-            if (Integer.parseInt(dialog.get(i)[1]) > 1) {
-                plural = " minutes\n";
-            } else {
-                plural = " minute\n";
-            }
-            dialogLine += dialog.get(i)[0] + ", connected for " + dialog.get(i)[1] + plural;
-        }
-        return dialogLine;
-    }
-*/
 }
